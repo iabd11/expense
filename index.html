@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Truck 2351 - Driver and Daily Expenses</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      padding: 10px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      max-width: 500px;
+      margin: 0 auto 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+    }
+
+    legend {
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #report {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      body {
+        padding: 5px;
+      }
+
+      form {
+        padding: 15px;
+      }
+
+      button {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Truck Number: <strong>2351</strong></h1>
+  
+  <!-- Password Authentication Form -->
+  <form id="loginForm" onsubmit="authenticate(event)">
+    <fieldset>
+      <legend>Login to Access Form</legend>
+      <label for="password">Enter Password:</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit">Login</button>
+    </fieldset>
+  </form>
+
+  <!-- Truck Form (Initially Hidden) -->
+  <form id="truckForm" style="display:none;" onsubmit="submitForm(event)">
+    <fieldset>
+      <legend>Driver & Daily Expenses Details</legend>
+      
+      <!-- Driver Name -->
+      <div class="form-group">
+        <label for="driverName">Driver Name:</label>
+        <input type="text" id="driverName" name="driverName" required>
+      </div>
+      
+      <!-- Daily Expenses -->
+      <div class="form-group">
+        <label for="paishki">Paishki (PKR):</label>
+        <input type="number" id="paishki" name="paishki" required>
+      </div>
+
+      <div class="form-group">
+        <label for="khana">Khana (PKR):</label>
+        <input type="number" id="khana" name="khana" required>
+      </div>
+
+      <div class="form-group">
+        <label for="bakiKharchy">Baki Kharchy (PKR):</label>
+        <input type="number" id="bakiKharchy" name="bakiKharchy" required>
+      </div>
+
+      <!-- Total Expenses Calculation -->
+      <div class="form-group">
+        <label for="totalExpenses">Expenses Left (PKR):</label>
+        <input type="number" id="totalExpenses" name="totalExpenses" readonly>
+      </div>
+
+      <button type="button" onclick="calculateExpenses()">Expenses Left</button>
+    </fieldset>
+    
+    <p>
+      <button type="submit">Submit</button>
+    </p>
+  </form>
+
+  <!-- Placeholder for the generated report -->
+  <div id="report" style="display:none;"></div>
+
+  <script>
+    const authorizedPassword = '2351';  // Set your desired password here
+
+    // Function to authenticate and show the form
+    function authenticate(event) {
+      event.preventDefault();
+      const password = document.getElementById('password').value;
+
+      if (password === authorizedPassword) {
+        document.getElementById('truckForm').style.display = 'block';
+        document.getElementById('loginForm').style.display = 'none';
+      } else {
+        alert('Incorrect password. You are not authorized to access this form.');
+      }
+    }
+
+    // Function to calculate Expenses Left (Paishki - Khana - Baki Kharchy)
+    function calculateExpenses() {
+      const paishki = parseFloat(document.getElementById('paishki').value) || 0;
+      const khana = parseFloat(document.getElementById('khana').value) || 0;
+      const bakiKharchy = parseFloat(document.getElementById('bakiKharchy').value) || 0;
+
+      // Calculate Expenses Left (Paishki - Khana - Baki Kharchy)
+      const expensesLeft = paishki - (khana + bakiKharchy);
+      document.getElementById('totalExpenses').value = expensesLeft.toFixed(2);
+    }
+
+    // Handle form submission
+    function submitForm(event) {
+      event.preventDefault();
+
+      // Gather form data
+      const formData = new FormData(document.getElementById('truckForm'));
+      const reportDiv = document.getElementById('report');
+      reportDiv.style.display = 'block';
+
+      // Generate the report HTML
+      let reportHTML = `
+        <h2>Truck 2351 - Daily Expense Report</h2>
+        <p><strong>Driver Name:</strong> ${formData.get('driverName')}</p>
+        <p><strong>Paishki (PKR):</strong> ${formData.get('paishki')}</p>
+        <p><strong>Khana (PKR):</strong> ${formData.get('khana')}</p>
+        <p><strong>Baki Kharchy (PKR):</strong> ${formData.get('bakiKharchy')}</p>
+        <p><strong>Expenses Left (PKR):</strong> ${formData.get('totalExpenses')}</p>
+      `;
+
+      reportDiv.innerHTML = reportHTML;
+    }
+  </script>
+
+</body>
+</html>
